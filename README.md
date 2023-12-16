@@ -1,4 +1,4 @@
-# Podcast RSS Feed Downloader
+# Podcast to Post
 
 This Python script allows you to parse a podcast RSS feed, view episodes, select specific episodes, and download their audio files. Additionally, it uses OpenAI Whisper to transcribe the downloaded audio content and publishes the transcript as a blog post.
 
@@ -22,12 +22,12 @@ This Python script allows you to parse a podcast RSS feed, view episodes, select
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/your-username/podcast-rss-downloader.git
+   git clone https://github.com/massimobottelli/podcast-to-post.git
 
 Navigate to the project directory:
  cd podcast-rss-downloader
 
 Run the script:
- python podcast_downloader.py
+ python podcast-to-post.py
 
 Follow the prompts to enter the podcast RSS feed URL, select episodes, and download audio files.
