@@ -31,3 +31,9 @@ Run the script:
  python podcast-to-post.py
 
 Follow the prompts to enter the podcast RSS feed URL, select episodes, and download audio files.
+
+## Backlog
+
+- transcript audio to text using Whisper
+- create a blog post with transcription
+- create an index of posts
