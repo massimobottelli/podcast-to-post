@@ -16,6 +16,7 @@ This Python script allows you to parse a podcast RSS feed, view episodes, select
   - `feedparser`
   - `prettytable`
   - `requests`
+  - `openai-whisper`
 
 ## Usage
 
@@ -34,6 +35,5 @@ This Python script allows you to parse a podcast RSS feed, view episodes, select
 
 ## Backlog
 
-- transcript audio to text using Whisper
 - create a blog post with transcription
 - create an index of posts
