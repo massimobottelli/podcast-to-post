@@ -24,13 +24,13 @@ This Python script allows you to parse a podcast RSS feed, view episodes, select
    ```bash
    git clone https://github.com/massimobottelli/podcast-to-post.git
 
-Navigate to the project directory:
+2. Navigate to the project directory:
  cd podcast-rss-downloader
 
-Run the script:
+3. Run the script:
  python podcast-to-post.py
 
-Follow the prompts to enter the podcast RSS feed URL, select episodes, and download audio files.
+4. Follow the prompts to enter the podcast RSS feed URL, select episodes, and download audio files.
 
 ## Backlog
 
