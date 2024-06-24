@@ -1,8 +1,3 @@
-# input: URL of a podcast RSS feed
-# parse feed, show episodes, select episodes, download audio file
-# use OpenAI Whisper to transcript the audio
-# publish the text as blog post
-
 import feedparser
 import ssl
 from prettytable import PrettyTable
@@ -10,6 +5,7 @@ from datetime import datetime
 import requests
 import whisper
 import os
+import re
 
 def divider():
     print("-" * 40)
@@ -29,38 +25,12 @@ def format_date(date_str):
         return date_str
 
 
-def get_entry_duration(entry):
-    """
-    Get the duration of a podcast entry.
-
-    Parameters:
-    - entry (dict): The entry dictionary from the parsed podcast feed.
-
-    Returns:
-    - str: The duration of the entry or None if not found.
-    """
-    # Check if 'itunes_duration' key is present in the entry
-    if 'itunes_duration' in entry:
-        return entry['itunes_duration']
-
-    # Check if 'enclosures' key is present in the entry
-    if 'enclosures' in entry:
-        # Iterate through enclosures and check if 'duration' key is present
-        for enclosure in entry['enclosures']:
-            if 'duration' in enclosure:
-                return enclosure['duration']
-
-    # If duration is not found, return None
-    return None
-
-
-
 def extract_mp3_url(feed_url):
     """
-        Extract MP3 URLs from a podcast feed.
-        Parameters: feed_url (str): The URL of the podcast feed.
-        Returns: list: A list of MP3 URLs extracted from the feed entries.
-        """
+    Extract MP3 URLs from a podcast feed.
+    Parameters: feed_url (str): The URL of the podcast feed.
+    Returns: list: A list of MP3 URLs extracted from the feed entries.
+    """
     # Parse the podcast feed from the specified URL
     feed = feedparser.parse(feed_url)
 
@@ -87,7 +57,7 @@ def extract_mp3_url(feed_url):
     return mp3_urls
 
 
-def transcribe_audio(file_path, output_file="transcribe.txt"):
+def transcribe_audio(file_path, output_file):
     """
     Transcribe audio using the Whisper ASR model and save the transcription to a text file.
 
@@ -119,6 +89,17 @@ def transcribe_audio(file_path, output_file="transcribe.txt"):
         print(f"An error occurred: {e}")
 
 
+def sanitize_filename(filename):
+    # Replace spaces with underscores
+    base, extension = os.path.splitext(filename)
+    sanitized_filename = base.replace(' ', '_')
+
+    # Replace special characters with underscores
+    sanitized_filename = re.sub(r'[^\w\s]', '_', sanitized_filename)
+
+    return sanitized_filename
+
+
 # Main
 
 # Allow unverified SSL certificate
@@ -146,7 +127,7 @@ try:
 
     # Create a PrettyTable to display the feed entries
     table = PrettyTable()
-    table.field_names = ["ID", "Date", "Title", "Duration"]
+    table.field_names = ["ID", "Date", "Title"]
     table.align = "l"  # Set text alignment to left
 
     # Iterate through the entries in the parsed feed
@@ -158,13 +139,8 @@ try:
         # Truncate the title if it exceeds 50 characters
         truncated_title = entry.title[:50] + "..." if len(entry.title) > 50 else entry.title
 
-        # Get the duration of each entry
-        duration = int(get_entry_duration(entry))
-        minutes, seconds = divmod(duration, 60)
-        formatted_duration = f"{int(minutes):02d}:{int(seconds):02d}"
-
         # Add a row to the PrettyTable for each entry
-        table.add_row([i + 1, formatted_date, truncated_title, formatted_duration])
+        table.add_row([i + 1, formatted_date, truncated_title])
 
     print(table)
     divider()
@@ -210,9 +186,11 @@ try:
 
                 divider()
 
-                # Transcribe audio
+                # Transcribe audio to file
                 print('Transcribing audio to text... (it will take a while)')
-                output = os.path.splitext(filename)[0] + ".txt"
+
+                sanitized_filename = sanitize_filename(filename)
+                output = os.path.splitext(sanitized_filename)[0] + ".txt"
 
                 transcribe_audio(filename, output)
 
